@@ -2,8 +2,8 @@ import 'package:task1/download_button/domain/repositories/download_repository.da
 
 class DownloadRepositoryImpl extends DownloadRepository {
   @override
-  Future getTodos() {
-    //
+  void downloadAsset() {
+
   }
 
 }
