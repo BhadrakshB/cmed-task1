@@ -1,40 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:task1/download_button/data/data_sources/download_datasource.dart';
+import 'package:task1/download_button/data/repositories/download_repository_impl.dart';
+import 'package:task1/download_button/domain/repositories/download_repository.dart';
+import 'package:task1/download_button/domain/use_cases/start_download_usecase.dart';
 
 enum DownloadState {
   idle,
   downloading,
+  paused,
+  cancelled,
   finished,
   error
 }
 
-class AssetDownloadProvider extends ChangeNotifier {
+class AssetDownloadNotifier extends ChangeNotifier {
+  late final DownloadRepository _downloadRepository;
+
+
+  AssetDownloadNotifier() : _downloadRepository = DownloadRepositoryImpl(DownloadDataSource());
 
   void _setState({
     required DownloadState newState,
     String errorMessage = '',
     String successMessage = '',
   }) {
-    _todoState = newState;
+    _downloadState = newState;
     _errorMessage = errorMessage;
     _successMessage = successMessage;
     notifyListeners();
   }
 
-  DownloadState _todoState = DownloadState.idle;
+  DownloadState _downloadState = DownloadState.idle;
   String _errorMessage = '';
   String _successMessage = '';
 
   // Getters for current state and error message
-  DownloadState get todoState => _todoState;
+  DownloadState get downloadState => _downloadState;
   String get errorMessage => _errorMessage;
   String get successMessage => _successMessage;
 
-  Future<void> getTodos() async {
+  Future<void> startDownload() async {
     _setState(newState: DownloadState.downloading); // Set state to fetching
     try {
-      // Call GetTodosUseCase to fetch todos from repository
 
-      // Add downloading function
+      StartDownloadUseCase(_downloadRepository).call();
 
       _setState(
           newState:

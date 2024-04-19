@@ -25,7 +25,7 @@ class _MyHomePageState
     return ChangeNotifierProvider(
       create: (
           BuildContext context) =>
-          AssetDownloadProvider(),
+          AssetDownloadNotifier(),
       builder: (context,
           child) =>
           _buildPage(context),
@@ -36,7 +36,7 @@ class _MyHomePageState
       BuildContext context) {
     final provider = context
         .read<
-        AssetDownloadProvider>();
+        AssetDownloadNotifier>();
 
     return Scaffold(
       appBar: AppBar(
@@ -49,9 +49,7 @@ class _MyHomePageState
       ),
       body: Center(
         child: ElevatedButton(
-          onPressed: () {
-
-          },
+          onPressed: () => provider.startDownload(),
           child: Text(
               "Start Download"),),
       ),
