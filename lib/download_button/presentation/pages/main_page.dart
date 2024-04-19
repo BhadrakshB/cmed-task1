@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/asset_download/provider.dart';
 
 class MyHomePage
     extends StatefulWidget {
@@ -19,6 +22,22 @@ class _MyHomePageState
   @override
   Widget build(
       BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (
+          BuildContext context) =>
+          AssetDownloadProvider(),
+      builder: (context,
+          child) =>
+          _buildPage(context),
+    );
+  }
+
+  Widget _buildPage(
+      BuildContext context) {
+    final provider = context
+        .read<
+        AssetDownloadProvider>();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme
@@ -26,12 +45,17 @@ class _MyHomePageState
             .colorScheme
             .inversePrimary,
         title: Text(
-        "Task 1: Background Download"),
+            "Task 1: Background Download"),
       ),
       body: Center(
-        child: ElevatedButton(onPressed: () {  }, child: Text("Start Download"), ),
+        child: ElevatedButton(
+          onPressed: () {
+
+          },
+          child: Text(
+              "Start Download"),),
       ),
-      
+
     );
   }
 }

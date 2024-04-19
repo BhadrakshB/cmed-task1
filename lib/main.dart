@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task1/constants.dart';
 
 import 'download_button/presentation/pages/main_page.dart';
 
@@ -16,13 +17,9 @@ class MyApp
       BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme
-            .fromSeed(
-            seedColor: Colors
-                .indigo),
-        useMaterial3: true,
-      ),
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.system,
       home: const MyHomePage(),
     );
   }
