@@ -7,4 +7,5 @@ abstract class DownloadRepository {
   // Method to download the asset
   Future<Permissions> downloadAsset();
 
+  Future<void> cancelDownload();
 }

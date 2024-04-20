@@ -30,6 +30,11 @@ class DownloadRepositoryImpl extends DownloadRepository {
     // _showDownloadCompleteNotification();
   }
 
+  @override
+  Future<void> cancelDownload() async {
+    _downloadDataSource.cancelDownload();
+  }
+
 }
 
 Future<void> _showDownloadCompleteNotification() async {

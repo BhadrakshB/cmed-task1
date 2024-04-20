@@ -36,14 +36,17 @@ class _MyHomePageState
             'downloader_send_port');
     _port.listen(
         (dynamic data) {
-      log(data.toString());
-      print(data.toString());
+
       String id = data[0];
       DownloadTaskStatus
-          status = data[1];
+          status = DownloadTaskStatus.fromInt(1);
       int progress = data[2];
-      setState(() {});
+      if (status == DownloadTaskStatus.complete) {
+
+      }
+      setState(() {print("Progress: ${data.progress.toString()}");});
     });
+
 
     FlutterDownloader
         .registerCallback(
@@ -103,35 +106,49 @@ class _MyHomePageState
             "Task 1: Background Download"),
       ),
       body: Center(
-        child: ElevatedButton(
-          onPressed:
-              () async {
-            await provider
-                .startDownload();
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed:
+                  () async {
+                await provider
+                    .startDownload();
 
-            if (provider
+                if (provider
                     .downloadState ==
-                DownloadState
-                    .storagePermissionError) {
-              const snackBar =
-                   SnackBar(
-                content: Text(
-                    "Please enable storage permissions to download", style:TextStyle(color: Colors.white)),
-                backgroundColor:
+                    DownloadState
+                        .storagePermissionError) {
+                  const snackBar =
+                  SnackBar(
+                    content: Text(
+                        "Please enable storage permissions to download", style:TextStyle(color: Colors.white)),
+                    backgroundColor:
                     (Colors
                         .indigoAccent),
-                     behavior: SnackBarBehavior.floating,
+                    behavior: SnackBarBehavior.floating,
 
-              );
-              ScaffoldMessenger.of(
+                  );
+                  ScaffoldMessenger.of(
                       context)
-                  .showSnackBar(
+                      .showSnackBar(
                       snackBar);
-            }
-          },
-          child: const Text(
-              "Start Download"),
-        ),
+                }
+              },
+              child: const Text(
+                  "Start Download"),
+            ),
+
+            ElevatedButton(
+              onPressed:
+                  () async {
+                    await provider
+                        .cancelDownload();
+                  },
+              child: const Text(
+                  "Cancel Download"),
+            ),
+          ],
+        )
       ),
     );
   }

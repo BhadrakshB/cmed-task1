@@ -4,10 +4,13 @@ import 'package:task1/download_button/data/repositories/download_repository_impl
 import 'package:task1/download_button/domain/repositories/download_repository.dart';
 import 'package:task1/download_button/domain/use_cases/start_download_usecase.dart';
 
+import '../../../domain/use_cases/cancel_download_usecase.dart';
+
 enum DownloadState {
   idle,
   downloading,
   paused,
+  cancelling,
   cancelled,
   finished,
   error,
@@ -55,6 +58,44 @@ class AssetDownloadNotifier
 
   String get successMessage =>
       _successMessage;
+
+
+  Future<void> cancelDownload() async {
+    _setState(
+        newState: DownloadState
+            .cancelling); // Set state to fetching
+    try {
+      Permissions result =
+      await CancelDownloadUseCase(
+          _downloadRepository)
+          .call();
+
+      _setState(
+          newState:
+          DownloadState
+              .cancelled);
+    } catch (e) {
+      _setState(
+          newState:
+          DownloadState
+              .error,
+          errorMessage:
+          e.toString());
+      // Set state to error if fetch fails
+    }
+    // Reset state to idle after 5 seconds
+    Future.delayed(
+      const Duration(seconds: 5),
+          () {
+        _setState(
+            newState:
+            DownloadState
+                .idle);
+      },
+
+    );
+
+  }
 
   Future<void>
       startDownload() async {
