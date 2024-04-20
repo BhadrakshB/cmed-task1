@@ -10,49 +10,96 @@ enum DownloadState {
   paused,
   cancelled,
   finished,
-  error
+  error,
+  storagePermissionError,
 }
 
-class AssetDownloadNotifier extends ChangeNotifier {
-  late final DownloadRepository _downloadRepository;
+class AssetDownloadNotifier
+    extends ChangeNotifier {
+  late final DownloadRepository
+      _downloadRepository;
 
-
-  AssetDownloadNotifier() : _downloadRepository = DownloadRepositoryImpl(DownloadDataSource());
+  AssetDownloadNotifier()
+      : _downloadRepository =
+            DownloadRepositoryImpl(
+                DownloadDataSource());
 
   void _setState({
-    required DownloadState newState,
+    required DownloadState
+        newState,
     String errorMessage = '',
-    String successMessage = '',
+    String successMessage =
+        '',
   }) {
     _downloadState = newState;
-    _errorMessage = errorMessage;
-    _successMessage = successMessage;
+    _errorMessage =
+        errorMessage;
+    _successMessage =
+        successMessage;
     notifyListeners();
   }
 
-  DownloadState _downloadState = DownloadState.idle;
+  DownloadState
+      _downloadState =
+      DownloadState.idle;
   String _errorMessage = '';
   String _successMessage = '';
 
   // Getters for current state and error message
-  DownloadState get downloadState => _downloadState;
-  String get errorMessage => _errorMessage;
-  String get successMessage => _successMessage;
+  DownloadState
+      get downloadState =>
+          _downloadState;
 
-  Future<void> startDownload() async {
-    _setState(newState: DownloadState.downloading); // Set state to fetching
+  String get errorMessage =>
+      _errorMessage;
+
+  String get successMessage =>
+      _successMessage;
+
+  Future<void>
+      startDownload() async {
+    _setState(
+        newState: DownloadState
+            .downloading); // Set state to fetching
     try {
+      Permissions result =
+          await StartDownloadUseCase(
+                  _downloadRepository)
+              .call();
 
-      StartDownloadUseCase(_downloadRepository).call();
-
+      if (result ==
+          Permissions
+              .storageAccessDenied) {
+        _setState(
+            newState:
+                DownloadState
+                    .storagePermissionError);
+      } else {
+        _setState(
+            newState:
+                DownloadState
+                    .finished); // Set state to success if fetch is successful
+      }
+    } catch (e) {
       _setState(
           newState:
-          DownloadState.finished); // Set state to success if fetch is successful
-    } catch (e) {
-      _setState(newState: DownloadState.error, errorMessage: e.toString());
+              DownloadState
+                  .error,
+          errorMessage:
+              e.toString());
       // Set state to error if fetch fails
     }
     // Reset state to idle after 5 seconds
-    _setState(newState: DownloadState.idle);
+    Future.delayed(
+      const Duration(seconds: 5),
+        () {
+          _setState(
+              newState:
+              DownloadState
+                  .idle);
+        },
+
+    );
+
   }
 }

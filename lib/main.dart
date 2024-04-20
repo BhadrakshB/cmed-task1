@@ -3,6 +3,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:task1/constants.dart';
 
+import 'api/local_notifications.dart';
 import 'download_button/presentation/pages/home_page.dart';
 
 Future<void> main() async {
@@ -30,9 +31,22 @@ Future<void> main() async {
 }
 
 class MyApp
-    extends StatelessWidget {
+    extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void initState() {
+
+    super.initState();
+
+    LocalNotificationService.initialize();
+  }
 
   @override
   Widget build(

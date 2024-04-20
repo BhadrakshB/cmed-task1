@@ -24,8 +24,10 @@ class DownloadRepositoryImpl extends DownloadRepository {
   // }
 
   @override
-  void downloadAsset() {
-    _downloadDataSource.downloadAsset();
+  Future<Permissions> downloadAsset() async {
+    return _downloadDataSource.downloadAsset();
+
+    // _showDownloadCompleteNotification();
   }
 
 }
@@ -42,6 +44,7 @@ Future<void> _showDownloadCompleteNotification() async {
       android: AndroidNotificationDetails(
         'download_channel',
         'Downloads',
+        icon: 'app_icon',
         importance: Importance.max,
         priority: Priority.high,
       ),

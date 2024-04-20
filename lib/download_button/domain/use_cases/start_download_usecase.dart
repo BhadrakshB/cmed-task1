@@ -1,4 +1,5 @@
 // Use case class for getting all todos
+import '../../data/data_sources/download_datasource.dart';
 import '../repositories/download_repository.dart';
 
 class StartDownloadUseCase {
@@ -9,8 +10,10 @@ class StartDownloadUseCase {
   StartDownloadUseCase(this._downloadRepository);
 
   // Method to fetch all todos asynchronously
-  void call() {
+  Future<Permissions> call() async {
     // Await the result of fetching todos from TodoRepository
-    _downloadRepository.downloadAsset();
+
+    var results = await _downloadRepository.downloadAsset();
+    return results;
   }
 }

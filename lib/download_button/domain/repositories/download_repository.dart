@@ -1,7 +1,10 @@
 
-// Abstract class defining the contract for TodoRepository
+
+
+import '../../data/data_sources/download_datasource.dart';
+
 abstract class DownloadRepository {
   // Method to download the asset
-  void downloadAsset();
+  Future<Permissions> downloadAsset();
 
 }
