@@ -40,23 +40,22 @@ class _MyHomePageState
             _port.sendPort,
             'downloader_send_port');
     _port.listen(
-        (dynamic data) {
+        (dynamic data) async {
+          var notifications = await FlutterLocalNotificationsPlugin().getActiveNotifications();
+          print(data.toString());
 
-      downloadNotificationClass = DownloadNotificationClass(data[0], data[2], DownloadTaskStatus.fromInt(1));
+          downloadNotificationClass = DownloadNotificationClass(data[0], data[2], DownloadTaskStatus.fromInt(data[1]));
 
       if (downloadNotificationClass.status == DownloadTaskStatus.complete) {
-        print("DOWNLOAD COMPLETE");
+        await Future.delayed(const Duration(seconds: 2));
+        downloadNotificationClass = DownloadNotificationClass();
+
       }
+
       setState(() {});
-      print("Progress: ${downloadNotificationClass.progress.toString()}");
+
     });
 
-
-    FlutterDownloader
-        .registerCallback(
-            downloadCallback);
-
-    FlutterLocalNotificationsPlugin().cancelAll();
   }
 
   @override
@@ -67,22 +66,7 @@ class _MyHomePageState
     super.dispose();
   }
 
-  @pragma('vm:entry-point')
-  static void
-      downloadCallback(
-          String id,
-          int status,
-          int progress) {
-    final SendPort? send =
-        IsolateNameServer
-            .lookupPortByName(
-                'downloader_send_port');
-    send!.send([
-      id,
-      status,
-      progress
-    ]);
-  }
+
 
   @override
   Widget build(
@@ -115,34 +99,43 @@ class _MyHomePageState
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            downloadNotificationClass.taskId != null && downloadNotificationClass.status == DownloadTaskStatus.running ? LinearProgressIndicator(
-              value: downloadNotificationClass.progress!/100,
+            downloadNotificationClass.taskId != null ? Padding(
+              padding: const EdgeInsets.all(30),
+              child: LinearProgressIndicator(
+                value: downloadNotificationClass.progress!/100,
+
+              ),
             ) : SizedBox(),
+            const SizedBox(height: 20,),
             ElevatedButton(
               onPressed:
                   () async {
                 await provider
                     .startDownload();
 
-                if (provider
-                    .downloadState ==
-                    DownloadState
-                        .storagePermissionError) {
-                  const snackBar =
-                  SnackBar(
-                    content: Text(
-                        "Please enable storage permissions to download", style:TextStyle(color: Colors.white)),
-                    backgroundColor:
-                    (Colors
-                        .indigoAccent),
-                    behavior: SnackBarBehavior.floating,
+                setState(() {
 
-                  );
-                  ScaffoldMessenger.of(
-                      context)
-                      .showSnackBar(
-                      snackBar);
-                }
+                });
+
+                // if (provider
+                //     .downloadState ==
+                //     DownloadState
+                //         .storagePermissionError) {
+                //   const snackBar =
+                //   SnackBar(
+                //     content: Text(
+                //         "Please enable storage permissions to download", style:TextStyle(color: Colors.white)),
+                //     backgroundColor:
+                //     (Colors
+                //         .indigoAccent),
+                //     behavior: SnackBarBehavior.floating,
+                //
+                //   );
+                //   ScaffoldMessenger.of(
+                //       context)
+                //       .showSnackBar(
+                //       snackBar);
+                // }
               },
               child: const Text(
                   "Start Download"),
