@@ -10,10 +10,10 @@ class CancelDownloadUseCase {
   CancelDownloadUseCase(this._downloadRepository);
 
   // Method to fetch all todos asynchronously
-  Future<Permissions> call() async {
+  Future<void> call() async {
     // Await the result of fetching todos from TodoRepository
 
     var results = await _downloadRepository.cancelDownload();
-    return results;
+
   }
 }

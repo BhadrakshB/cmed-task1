@@ -65,7 +65,6 @@ class AssetDownloadNotifier
         newState: DownloadState
             .cancelling); // Set state to fetching
     try {
-      Permissions result =
       await CancelDownloadUseCase(
           _downloadRepository)
           .call();
