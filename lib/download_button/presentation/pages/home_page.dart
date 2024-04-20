@@ -4,8 +4,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/models/download_notification_model.dart';
 import '../providers/asset_download/provider.dart';
 
 class MyHomePage
@@ -23,6 +25,9 @@ class MyHomePage
 class _MyHomePageState
     extends State<
         MyHomePage> {
+
+  DownloadNotificationClass downloadNotificationClass = DownloadNotificationClass();
+
   ReceivePort _port =
       ReceivePort();
 
@@ -37,20 +42,21 @@ class _MyHomePageState
     _port.listen(
         (dynamic data) {
 
-      String id = data[0];
-      DownloadTaskStatus
-          status = DownloadTaskStatus.fromInt(1);
-      int progress = data[2];
-      if (status == DownloadTaskStatus.complete) {
+      downloadNotificationClass = DownloadNotificationClass(data[0], data[2], DownloadTaskStatus.fromInt(1));
 
+      if (downloadNotificationClass.status == DownloadTaskStatus.complete) {
+        print("DOWNLOAD COMPLETE");
       }
-      setState(() {print("Progress: ${data.progress.toString()}");});
+      setState(() {});
+      print("Progress: ${downloadNotificationClass.progress.toString()}");
     });
 
 
     FlutterDownloader
         .registerCallback(
             downloadCallback);
+
+    FlutterLocalNotificationsPlugin().cancelAll();
   }
 
   @override
@@ -107,7 +113,11 @@ class _MyHomePageState
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            downloadNotificationClass.taskId != null && downloadNotificationClass.status == DownloadTaskStatus.running ? LinearProgressIndicator(
+              value: downloadNotificationClass.progress!/100,
+            ) : SizedBox(),
             ElevatedButton(
               onPressed:
                   () async {
@@ -138,18 +148,20 @@ class _MyHomePageState
                   "Start Download"),
             ),
 
-            ElevatedButton(
-              onPressed:
-                  () async {
-                    await provider
-                        .cancelDownload();
-                  },
-              child: const Text(
-                  "Cancel Download"),
-            ),
+            // ElevatedButton(
+            //   onPressed:
+            //       () async {
+            //         await provider
+            //             .cancelDownload();
+            //       },
+            //   child: const Text(
+            //       "Cancel Download"),
+            // ),
           ],
         )
       ),
     );
   }
 }
+
+
