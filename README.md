@@ -1,16 +1,21 @@
-# task1
+# Task 01: Large File Download App
+## Project Description
 
-A new Flutter project.
+This Flutter application allows users to download a large file from the internet in the background, even if they leave the app. It provides progress updates through a progress widget on the screen and notifications while the app is in the background.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Single-screen interface with a central download button.
+- Progress bar to visualize download progress.
+- Background download functionality.
+- Download progress notifications.
+- Standard Material Design UI.
 
-A few resources to get you started if this is your first Flutter project:
+## Implementation Details
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Uses the [retrofit](https://pub.dev/packages/retrofit) package for network requests.
+- Employs the [flutter_downloader](https://pub.dev/packages/flutter_downloader) package to manage download storage.
+- Leverages the [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications) package for background notifications.
+- Adheres to best practices for state management ([Provider](https://pub.dev/packages/provider)).
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
